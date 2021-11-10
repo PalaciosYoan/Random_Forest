@@ -21,20 +21,24 @@ c2_idx = np.array(c2_idx)
 c2_idx = c2_idx[0,0:1500]
 
 # Concatenate arrays and perform random permutation
-all_idx = np.concatenate([c1_idx, c2_idx])
-all_idx = np.random.permutation(all_idx)
+# all_idx = np.array([])
+# for i in range(500, 2000, 500):
+#     temp1 = c1_idx[i-500:i] #i = 500,  0-499, i=1000, 500-999, 
+#     temp2 = c2_idx[i-500:i]
+#     all_idx = np.concatenate([temp1, temp2])
+# all_idx = np.random.permutation(all_idx)
 
 # train/val/test split
-train_idx = all_idx[0:1000]
-validation_idx = all_idx[1001:2000]
-test_idx = all_idx[2001:3000]
+train_idx = np.concatenate([c1_idx[:500], c2_idx[:500]]) #all_idx[0:1000]
+validation_idx = np.concatenate([c1_idx[500:1000], c2_idx[500:1000]])  #all_idx[1001:2000]
+test_idx = np.concatenate([c1_idx[1000:1500], c2_idx[1000:1500]]) #all_idx[2001:3000]
 
 # x_train: digits, y_train: labels
 x_train = data_fea[train_idx,:]/255
 y_train = data_gnd[train_idx,:]
 
 # logregr model initialization and training
-clf=RandomForestClassifier(n_estimators=100)
+clf=RandomForestClassifier(n_estimators=1, bootstrap=False)
 clf.fit(x_train,y_train.ravel())
 
 
