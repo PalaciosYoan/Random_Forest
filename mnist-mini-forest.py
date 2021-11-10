@@ -1,5 +1,6 @@
 import scipy.io
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 mat = scipy.io.loadmat('MNISTmini.mat')
@@ -36,18 +37,34 @@ test_idx = np.concatenate([c1_idx[1000:1500], c2_idx[1000:1500]]) #all_idx[2001:
 # x_train: digits, y_train: labels
 x_train = data_fea[train_idx,:]/255
 y_train = data_gnd[train_idx,:]
+plotx = []
+ploty1 = []
+ploty = []
+for i in range(1, 51):
+    # logregr model initialization and training
+    clf=RandomForestClassifier(n_estimators=i, bootstrap=False, max_leaf_nodes=100)
+    clf.fit(x_train,y_train.ravel())
 
-# logregr model initialization and training
-clf=RandomForestClassifier(n_estimators=1, bootstrap=False)
-clf.fit(x_train,y_train.ravel())
+    # Make predictions
+    y_pred=clf.predict(data_fea[validation_idx,:])
+
+    # Assess performance
+    val_score = clf.score(data_fea[validation_idx,:], data_gnd[validation_idx,:])
+    train_score = clf.score(data_fea[train_idx,:], data_gnd[train_idx,:])
+    ploty.append(val_score)
+    ploty1.append(train_score)
+    plotx.append(i)
+
+df = pd.DataFrame()
+df['x'] = plotx
+df['val_score'] = ploty
+df['train_score'] = ploty1
+ax = plt.gca()
+df.plot(kind='line', x='x', y='val_score', color='blue', ax=ax)
+df.plot(kind='line', x='x', y='train_score', color='red', ax=ax)
 
 
-# Make predictions
-y_pred=clf.predict(data_fea[test_idx,:])
-
-# Assess performance
-score = clf.score(data_fea[test_idx,:], data_gnd[test_idx,:])
-print(score)
+plt.show()
 
 
 
