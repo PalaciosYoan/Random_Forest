@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
+from sympy import plot
 mat = scipy.io.loadmat('MNISTmini.mat')
 
 data_fea = mat['train_fea1']
@@ -59,10 +60,18 @@ df = pd.DataFrame()
 df['x'] = plotx
 df['val_score'] = ploty
 df['train_score'] = ploty1
+maxVal = df['val_score']
+maxValidx = maxVal.idxmax()
+maxTrain = df['train_score']
+maxTrainidx = maxTrain.idxmax()
+x = plotx[maxValidx]
+maxVal = ploty[maxValidx]
+
 ax = plt.gca()
 df.plot(kind='line', x='x', y='val_score', color='blue', ax=ax)
 df.plot(kind='line', x='x', y='train_score', color='red', ax=ax)
-
+fig, ax1 = plt.subplots(1, 1, figsize=(8, 10))
+ax1.plot(x, maxVal, 'go', label='marker only')
 
 plt.show()
 
