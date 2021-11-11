@@ -123,7 +123,7 @@ plt.show()
 plotI3 = []
 plotMaxEstimatorsVal = []
 plotMaxEstimatorsTrain = []
-for i in range(1,200):
+for i in range(1,500):
     # random forest model initialization and training
     maxEstimators = RandomForestClassifier(
             n_estimators=i, bootstrap=False, random_state=0, max_leaf_nodes = maxLeafValidx, max_depth = maxDepthValidx)
