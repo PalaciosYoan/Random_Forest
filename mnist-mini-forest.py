@@ -48,7 +48,7 @@ ploty = []
 for i in range(2, 50):  # max_leaf_nodes must be higher than 1, so i just started at 2
     # logregr model initialization and training
     clf = RandomForestClassifier(
-        n_estimators=1, bootstrap=False, max_leaf_nodes=i, random_state=0)
+        n_estimators=1, bootstrap=False, random_state=0)
     clf.fit(x_train, y_train.ravel())
 
     # Make predictions
