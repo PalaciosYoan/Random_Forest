@@ -83,7 +83,7 @@ plotMaxLeafTrain = []
 for i in range(2,1000):
     # random forest model initialization and training
     maxLeaf = RandomForestClassifier(
-            n_estimators=1, bootstrap=False, random_state=0, max_depth = maxplotIidx, max_leaf_nodes = i+1)
+            n_estimators=1, bootstrap=False, random_state=0, max_leaf_nodes = i, max_depth = maxDepthValidx)
     maxLeaf.fit(x_train, y_train.ravel())
 
     # Make predictions
@@ -112,7 +112,7 @@ plt.figure(2)
 plt.semilogx(plotI2, plotMaxLeafVal, color="blue", label="Val_Score")
 plt.semilogx(plotI2, plotMaxLeafTrain, color="red", label="Train_Score")
 plt.legend(loc="lower right")
-plt.text(maxplotI2idx, maxLeafVal, ' {} , {}'.format(maxplotIidx, maxLeafVal))
+plt.text(maxplotI2idx, maxLeafVal, ' {} , {}'.format(maxplotI2idx, maxLeafVal))
 plt.xlabel("Max Leaf Node Value Increasing Continously")
 plt.ylabel("Score Values")
 
