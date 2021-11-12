@@ -121,42 +121,42 @@ plt.show()
 
 
 plotI3 = []
-plotMaxEstimatorsVal = []
-plotMaxEstimatorsTrain = []
-for i in range(1,500):
+plotMaxSampleSplitVal = []
+plotMaxSampleSplitTrain = []
+for i in range(2,1000):
     # random forest model initialization and training
-    maxEstimators = RandomForestClassifier(
-            n_estimators=i, bootstrap=False, random_state=0, max_leaf_nodes = maxLeafValidx, max_depth = maxDepthValidx)
-    maxEstimators.fit(x_train, y_train.ravel())
+    maxSampleSplit = RandomForestClassifier(
+            n_estimators=1, bootstrap=False, random_state=0, max_leaf_nodes = maxLeafValidx, max_depth = maxDepthValidx, min_samples_split=i)
+    maxSampleSplit.fit(x_train, y_train.ravel())
 
     # Make predictions
-    maxEstimatorsPred = maxEstimators.predict(data_fea[validation_idx, :])
+    maxSampleSplitPred = maxSampleSplit.predict(data_fea[validation_idx, :])
 
     # Assess performance
-    maxEstimators_val_score = maxEstimators.score(
+    maxSampleSplit_val_score = maxSampleSplit.score(
         data_fea[validation_idx, :], data_gnd[validation_idx, :])
-    maxEstimators_train_score = maxEstimators.score(data_fea[train_idx, :], data_gnd[train_idx, :])
+    maxSampleSplit_train_score = maxSampleSplit.score(data_fea[train_idx, :], data_gnd[train_idx, :])
 
     # Push the performace and value of C into list
-    plotMaxEstimatorsVal.append(maxEstimators_val_score)
-    plotMaxEstimatorsTrain.append(maxEstimators_train_score)
+    plotMaxSampleSplitVal.append(maxSampleSplit_val_score)
+    plotMaxSampleSplitTrain.append(maxSampleSplit_train_score)
     plotI3.append(i)
 
 
 # Find (x,y) of best validation score
-maxEstimatorsVal = max(plotMaxEstimatorsVal)
-maxEstimatorsValidx = plotMaxEstimatorsVal.index(maxEstimatorsVal)
-maxplotI3idx = plotI3[maxEstimatorsValidx]
+maxSampleSplitVal = max(plotMaxSampleSplitVal)
+maxSampleSplitValidx = plotMaxSampleSplitVal.index(maxSampleSplitVal)
+maxplotI3idx = plotI3[maxSampleSplitValidx]
 print(maxplotI3idx)
-print(maxEstimatorsVal)
+print(maxSampleSplitVal)
 
 # Plot the Score of both validation and training
 plt.figure(3)
-plt.semilogx(plotI3, plotMaxEstimatorsVal, color="blue", label="Val_Score")
-plt.semilogx(plotI3, plotMaxEstimatorsTrain, color="red", label="Train_Score")
+plt.semilogx(plotI3, plotMaxSampleSplitVal, color="blue", label="Val_Score")
+plt.semilogx(plotI3, plotMaxSampleSplitTrain, color="red", label="Train_Score")
 plt.legend(loc="lower right")
-plt.text(maxplotI3idx, maxEstimatorsVal, ' {} , {}'.format(maxplotI3idx, maxEstimatorsVal))
-plt.xlabel("# of Trees Increasing Continously")
+plt.text(maxplotI3idx, maxSampleSplitVal, ' {} , {}'.format(maxplotI3idx, maxSampleSplitVal))
+plt.xlabel("min_sample_split Increasing continously")
 plt.ylabel("Score Values")
 
 # Show Graph
