@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
+from datetime import datetime
 
 
 def main():
@@ -89,14 +90,16 @@ def main():
     '''Finding the best Depth for our tree'''
     
     #define needed columns
-    df = pd.DataFrame(columns=['id', 'max_depth', 'Val_score', 'Train_score'])
+    df = pd.DataFrame(columns=['id', 'max_depth', 'Val_score', 'Train_score', 'train_time(sec)'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
     for currDepth in range(1,20):
+        now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=1, random_state=0, max_depth = currDepth)
         random_forest.fit(x_train, y_train.ravel())
+        end = datetime.now()
         currentModelScore_val = random_forest.score(data_fea[validation_idx, :], data_gnd[validation_idx, :])
         currentModelScore_train = random_forest.score(data_fea[train_idx, :], data_gnd[train_idx, :])
-        df = df.append({'id':counter, 'max_depth':currDepth, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train}, ignore_index=True)
+        df = df.append({'id':counter, 'max_depth':currDepth, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train, 'train_time(sec)':(end-now).total_seconds()}, ignore_index=True)
         counter += 1
 
     df.to_csv('./max_depth/max_depth10.csv', index=False)
@@ -115,17 +118,28 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num Depth")
     plt.ylabel("Score Values")
+    
+    ## Time vs depth
+    plt.figure(9)
+    timeval = df['train_time(sec)'][bestValScoreidx]
+    plt.title("Number of Depth vs Time")
+    plt.plot(df['max_depth'], df['train_time(sec)'], color="red", label="train_time")
+    plt.scatter(maxDepthVal, timeval, color='green')
+    
+
     #################################################################################################
     
     '''Finding min_samples_split can be between 4 & 2 or 24(this one is the best of best, iterations of 39)'''
-    df = pd.DataFrame(columns=['id', 'min_samples_split', 'Val_score', 'Train_score'])
+    df = pd.DataFrame(columns=['id', 'min_samples_split', 'Val_score', 'Train_score', 'train_time(sec)'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
     for minSplit in range(2, 10):
+        now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=1, random_state=0, min_samples_split=minSplit, max_depth = int(maxDepthVal))
         random_forest.fit(x_train, y_train.ravel())
+        end = datetime.now()
         currentModelScore_val = random_forest.score(data_fea[validation_idx, :], data_gnd[validation_idx, :])
         currentModelScore_train = random_forest.score(data_fea[train_idx, :], data_gnd[train_idx, :])
-        df = df.append({'id':counter, 'min_samples_split':minSplit, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train}, ignore_index=True)
+        df = df.append({'id':counter, 'min_samples_split':minSplit, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train, 'train_time(sec)':(end-now).total_seconds()}, ignore_index=True)
         counter += 1
 
     df.to_csv('./min_samples_split/min_samples_split.csv', index=False)
@@ -144,18 +158,26 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num min_samples_split")
     plt.ylabel("Score Values")
+    
+    plt.figure(10)
+    timeval = df['train_time(sec)'][bestValScoreidx]
+    plt.title("Number of min_samples_split vs Time")
+    plt.plot(df['min_samples_split'], df['train_time(sec)'], color="red", label="train_time")
+    plt.scatter(bestval1, timeval, color='green')
     #################################################################################################
     
     '''Finding max_leaf_nodes '''
     
-    df = pd.DataFrame(columns=['id', 'max_leaf_nodes', 'Val_score', 'Train_score'])
+    df = pd.DataFrame(columns=['id', 'max_leaf_nodes', 'Val_score', 'Train_score', 'train_time(sec)'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
     for numleafs in range(2, 63,10):
+        now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=1, random_state=0, max_leaf_nodes=numleafs, min_samples_split=int(bestval1), max_depth = maxDepthVal)
         random_forest.fit(x_train, y_train.ravel())
+        end = datetime.now()
         currentModelScore_val = random_forest.score(data_fea[validation_idx, :], data_gnd[validation_idx, :])
         currentModelScore_train = random_forest.score(data_fea[train_idx, :], data_gnd[train_idx, :])
-        df = df.append({'id':counter, 'max_leaf_nodes':numleafs, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train}, ignore_index=True)
+        df = df.append({'id':counter, 'max_leaf_nodes':numleafs, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train, 'train_time(sec)':(end-now).total_seconds()}, ignore_index=True)
         counter += 1
 
     df.to_csv('./max_leaf_nodes/max_leaf_nodes.csv', index=False)
@@ -174,18 +196,26 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num max_leaf_nodes")
     plt.ylabel("Score Values")
+    
+    plt.figure(11)
+    timeval = df['train_time(sec)'][bestValScoreidx]
+    plt.title("Number of max_leaf_nodes vs Time")
+    plt.plot(df['max_leaf_nodes'], df['train_time(sec)'], color="red", label="train_time")
+    plt.scatter(bestval, timeval, color='green')
     #################################################################################################
     
     ''' Finding min_samples_leaf '''
     
-    df = pd.DataFrame(columns=['id', 'min_samples_leaf', 'Val_score', 'Train_score'])
+    df = pd.DataFrame(columns=['id', 'min_samples_leaf', 'Val_score', 'Train_score', 'train_time(sec)'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
     for minLeaf in range(1, 40):
+        now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=1, random_state=0,min_samples_leaf=minLeaf, max_leaf_nodes=int(bestval), min_samples_split=int(bestval1), max_depth = int(maxDepthVal))
         random_forest.fit(x_train, y_train.ravel())
+        end = datetime.now()
         currentModelScore_val = random_forest.score(data_fea[validation_idx, :], data_gnd[validation_idx, :])
         currentModelScore_train = random_forest.score(data_fea[train_idx, :], data_gnd[train_idx, :])
-        df = df.append({'id':counter, 'min_samples_leaf':minLeaf, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train}, ignore_index=True)
+        df = df.append({'id':counter, 'min_samples_leaf':minLeaf, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train, 'train_time(sec)':(end-now).total_seconds()}, ignore_index=True)
         counter += 1
 
     df.to_csv('./min_samples_leaf/min_samples_leaf.csv', index=False)
@@ -205,19 +235,25 @@ def main():
     plt.xlabel("Num min_samples_leaf")
     plt.ylabel("Score Values")
 
-
+    plt.figure(12)
+    timeval = df['train_time(sec)'][bestValScoreidx]
+    plt.title("Number of min_samples_leaf vs Time")
+    plt.plot(df['min_samples_leaf'], df['train_time(sec)'], color="red", label="train_time")
+    plt.scatter(bestval2, timeval, color='green')
     #################################################################################################1
     
     ''' Finding max_features '''
     
-    df = pd.DataFrame(columns=['id', 'max_features', 'Val_score', 'Train_score'])
+    df = pd.DataFrame(columns=['id', 'max_features', 'Val_score', 'Train_score', 'train_time(sec)'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
-    for maxFea in range(1, 61, 10):
+    for maxFea in range(1, 20):
+        now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=1, random_state=0,max_features=maxFea,min_samples_leaf=int(bestval2), max_leaf_nodes=int(bestval), min_samples_split=int(bestval1), max_depth = int(maxDepthVal))
         random_forest.fit(x_train, y_train.ravel())
+        end = datetime.now()
         currentModelScore_val = random_forest.score(data_fea[validation_idx, :], data_gnd[validation_idx, :])
         currentModelScore_train = random_forest.score(data_fea[train_idx, :], data_gnd[train_idx, :])
-        df = df.append({'id':counter, 'max_features':maxFea, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train}, ignore_index=True)
+        df = df.append({'id':counter, 'max_features':maxFea, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train, 'train_time(sec)':(end-now).total_seconds()}, ignore_index=True)
         counter += 1
 
     df.to_csv('./max_features/max_features.csv', index=False)
@@ -238,18 +274,25 @@ def main():
     plt.ylabel("Score Values")
     
 
+    plt.figure(13)
+    timeval = df['train_time(sec)'][bestValScoreidx]
+    plt.title("Number of max_features vs Time")
+    plt.plot(df['max_features'], df['train_time(sec)'], color="red", label="train_time")
+    plt.scatter(bestval3, timeval, color='green')
     #################################################################################################2
     
     ''' Finding min_impurity_decrease '''
     
-    df = pd.DataFrame(columns=['id', 'min_impurity_decrease', 'Val_score', 'Train_score'])
+    df = pd.DataFrame(columns=['id', 'min_impurity_decrease', 'Val_score', 'Train_score', 'train_time(sec)'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
     for minImpurity in range(0, 6):
+        now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=1, random_state=0,min_impurity_decrease=minImpurity,min_samples_leaf=int(bestval2),max_features= int(bestval3), max_leaf_nodes=int(bestval), min_samples_split=int(bestval1), max_depth = int(maxDepthVal))
         random_forest.fit(x_train, y_train.ravel())
+        end = datetime.now()
         currentModelScore_val = random_forest.score(data_fea[validation_idx, :], data_gnd[validation_idx, :])
         currentModelScore_train = random_forest.score(data_fea[train_idx, :], data_gnd[train_idx, :])
-        df = df.append({'id':counter, 'min_impurity_decrease':minImpurity, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train}, ignore_index=True)
+        df = df.append({'id':counter, 'min_impurity_decrease':minImpurity, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train, 'train_time(sec)':(end-now).total_seconds()}, ignore_index=True)
         counter += 1
 
     df.to_csv('./min_impurity_decrease/min_impurity_decrease.csv', index=False)
@@ -269,19 +312,25 @@ def main():
     plt.xlabel("Num min_impurity_decrease")
     plt.ylabel("Score Values")
     
-    
+    plt.figure(14)
+    timeval = df['train_time(sec)'][bestValScoreidx]
+    plt.title("Number of min_impurity_decrease vs Time")
+    plt.plot(df['min_impurity_decrease'], df['train_time(sec)'], color="red", label="train_time")
+    plt.scatter(bestval5, timeval, color='green')
     #################################################################################################3
     
     ''' Finding n_estimators & warm_start = False '''
     
-    df = pd.DataFrame(columns=['id', 'n_estimators', 'Val_score', 'Train_score'])
+    df = pd.DataFrame(columns=['id', 'n_estimators', 'Val_score', 'Train_score', 'train_time(sec)'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
     for numTree in range(1, 20):
+        now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=numTree, random_state=0, warm_start=False,min_impurity_decrease=int(bestval5), min_samples_leaf=int(bestval2),max_features= int(bestval3), max_leaf_nodes=int(bestval), min_samples_split=int(bestval1), max_depth = int(maxDepthVal))
         random_forest.fit(x_train, y_train.ravel())
+        end = datetime.now()
         currentModelScore_val = random_forest.score(data_fea[validation_idx, :], data_gnd[validation_idx, :])
         currentModelScore_train = random_forest.score(data_fea[train_idx, :], data_gnd[train_idx, :])
-        df = df.append({'id':counter, 'n_estimators':numTree, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train}, ignore_index=True)
+        df = df.append({'id':counter, 'n_estimators':numTree, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train, 'train_time(sec)':(end-now).total_seconds()}, ignore_index=True)
         counter += 1
 
     df.to_csv('./n_estimators_warm_false/n_estimators_warm_false.csv', index=False)
@@ -301,19 +350,25 @@ def main():
     plt.xlabel("Num n_estimators")
     plt.ylabel("Score Values")
 
-
+    plt.figure(15)
+    timeval = df['train_time(sec)'][bestValScoreidx]
+    plt.title("Number of n_estimators & warm_start = False vs Time")
+    plt.plot(df['n_estimators'], df['train_time(sec)'], color="red", label="train_time")
+    plt.scatter(bestval6, timeval, color='green')
     # #################################################################################################4
     
     ''' Finding n_estimators & warm_start = True '''
     
-    df = pd.DataFrame(columns=['id', 'n_estimators', 'Val_score', 'Train_score'])
+    df = pd.DataFrame(columns=['id', 'n_estimators', 'Val_score', 'Train_score', 'train_time(sec)'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
     for numTree in range(1, 20):
+        now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=numTree, random_state=0, warm_start=True,min_impurity_decrease=int(bestval5), min_samples_leaf=int(bestval2),max_features= int(bestval3), max_leaf_nodes=int(bestval), min_samples_split=int(bestval1), max_depth = int(maxDepthVal))
         random_forest.fit(x_train, y_train.ravel())
+        end = datetime.now()
         currentModelScore_val = random_forest.score(data_fea[validation_idx, :], data_gnd[validation_idx, :])
         currentModelScore_train = random_forest.score(data_fea[train_idx, :], data_gnd[train_idx, :])
-        df = df.append({'id':counter, 'n_estimators':numTree, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train}, ignore_index=True)
+        df = df.append({'id':counter, 'n_estimators':numTree, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train, 'train_time(sec)':(end-now).total_seconds()}, ignore_index=True)
         counter += 1
     df.to_csv('./n_estimators_warm_true/n_estimators_warm_true.csv', index=False)
     bestValScoreidx = df['Val_score'].idxmax()
@@ -331,6 +386,12 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num n_estimators")
     plt.ylabel("Score Values")
+
+    plt.figure(16)
+    timeval = df['train_time(sec)'][bestValScoreidx]
+    plt.title("Number of n_estimators & warm_start = True vs Time")
+    plt.plot(df['n_estimators'], df['train_time(sec)'], color="red", label="train_time")
+    plt.scatter(bestval7, timeval, color='green')
 
     # print("Done")
     # # Show Graph
