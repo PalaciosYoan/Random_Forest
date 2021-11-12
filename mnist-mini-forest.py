@@ -120,13 +120,14 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num Depth")
     plt.ylabel("Score Values")
+    #plt.savefig('./figures/1.png')
     
     ## Time vs depth
-    plt.figure(9)
-    timeval = df['train_time(sec)'][bestValScoreidx]
-    plt.title("Number of Depth vs Time")
-    plt.plot(df['max_depth'], df['train_time(sec)'], color="red", label="train_time")
-    plt.scatter(maxDepthVal, timeval, color='green')
+    # plt.figure(9)
+    # timeval = df['train_time(sec)'][bestValScoreidx]
+    # plt.title("Number of Depth vs Time")
+    # plt.plot(df['max_depth'], df['train_time(sec)'], color="red", label="train_time")
+    # plt.scatter(maxDepthVal, timeval, color='green')
     
 
     #################################################################################################
@@ -162,19 +163,20 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num min_samples_split")
     plt.ylabel("Score Values")
+    #plt.savefig('./figures/2.png')
     
-    plt.figure(10)
-    timeval = df['train_time(sec)'][bestValScoreidx]
-    plt.title("Number of min_samples_split vs Time")
-    plt.plot(df['min_samples_split'], df['train_time(sec)'], color="red", label="train_time")
-    plt.scatter(bestval1, timeval, color='green')
+    # plt.figure(10)
+    # timeval = df['train_time(sec)'][bestValScoreidx]
+    # plt.title("Number of min_samples_split vs Time")
+    # plt.plot(df['min_samples_split'], df['train_time(sec)'], color="red", label="train_time")
+    # plt.scatter(bestval1, timeval, color='green')
     #################################################################################################
     
     '''Finding max_leaf_nodes '''
     
     df = pd.DataFrame(columns=['id', 'max_leaf_nodes', 'Val_score', 'Train_score', 'train_time(sec)', 'Test_score'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
-    for numleafs in range(2, 63,10):
+    for numleafs in range(2, 43):
         now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=1, random_state=0, max_leaf_nodes=numleafs, min_samples_split=int(bestval1), max_depth = maxDepthVal)
         random_forest.fit(x_train, y_train.ravel())
@@ -202,12 +204,13 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num max_leaf_nodes")
     plt.ylabel("Score Values")
+    #plt.savefig('./figures/3.png')
     
-    plt.figure(11)
-    timeval = df['train_time(sec)'][bestValScoreidx]
-    plt.title("Number of max_leaf_nodes vs Time")
-    plt.plot(df['max_leaf_nodes'], df['train_time(sec)'], color="red", label="train_time")
-    plt.scatter(bestval, timeval, color='green')
+    # plt.figure(11)
+    # timeval = df['train_time(sec)'][bestValScoreidx]
+    # plt.title("Number of max_leaf_nodes vs Time")
+    # plt.plot(df['max_leaf_nodes'], df['train_time(sec)'], color="red", label="train_time")
+    # plt.scatter(bestval, timeval, color='green')
     #################################################################################################
     
     ''' Finding min_samples_leaf '''
@@ -242,12 +245,13 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num min_samples_leaf")
     plt.ylabel("Score Values")
+    #plt.savefig('./figures/4.png')
 
-    plt.figure(12)
-    timeval = df['train_time(sec)'][bestValScoreidx]
-    plt.title("Number of min_samples_leaf vs Time")
-    plt.plot(df['min_samples_leaf'], df['train_time(sec)'], color="red", label="train_time")
-    plt.scatter(bestval2, timeval, color='green')
+    # plt.figure(12)
+    # timeval = df['train_time(sec)'][bestValScoreidx]
+    # plt.title("Number of min_samples_leaf vs Time")
+    # plt.plot(df['min_samples_leaf'], df['train_time(sec)'], color="red", label="train_time")
+    # plt.scatter(bestval2, timeval, color='green')
     #################################################################################################1
     
     ''' Finding max_features '''
@@ -282,13 +286,13 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num max_features")
     plt.ylabel("Score Values")
-    
+    #plt.savefig('./figures/5.png')
 
-    plt.figure(13)
-    timeval = df['train_time(sec)'][bestValScoreidx]
-    plt.title("Number of max_features vs Time")
-    plt.plot(df['max_features'], df['train_time(sec)'], color="red", label="train_time")
-    plt.scatter(bestval3, timeval, color='green')
+    # plt.figure(13)
+    # timeval = df['train_time(sec)'][bestValScoreidx]
+    # plt.title("Number of max_features vs Time")
+    # plt.plot(df['max_features'], df['train_time(sec)'], color="red", label="train_time")
+    # plt.scatter(bestval3, timeval, color='green')
     #################################################################################################2
     
     ''' Finding min_impurity_decrease '''
@@ -323,12 +327,13 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num min_impurity_decrease")
     plt.ylabel("Score Values")
+    #plt.savefig('./figures/6.png')
     
-    plt.figure(14)
-    timeval = df['train_time(sec)'][bestValScoreidx]
-    plt.title("Number of min_impurity_decrease vs Time")
-    plt.plot(df['min_impurity_decrease'], df['train_time(sec)'], color="red", label="train_time")
-    plt.scatter(bestval5, timeval, color='green')
+    # plt.figure(14)
+    # timeval = df['train_time(sec)'][bestValScoreidx]
+    # plt.title("Number of min_impurity_decrease vs Time")
+    # plt.plot(df['min_impurity_decrease'], df['train_time(sec)'], color="red", label="train_time")
+    # plt.scatter(bestval5, timeval, color='green')
     #################################################################################################3
     
     ''' Finding n_estimators & warm_start = False '''
@@ -363,19 +368,20 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num n_estimators")
     plt.ylabel("Score Values")
+    #plt.savefig('./figures/7.png')
 
-    plt.figure(15)
-    timeval = df['train_time(sec)'][bestValScoreidx]
-    plt.title("Number of n_estimators & warm_start = False vs Time")
-    plt.plot(df['n_estimators'], df['train_time(sec)'], color="red", label="train_time")
-    plt.scatter(bestval6, timeval, color='green')
+    # plt.figure(15)
+    # timeval = df['train_time(sec)'][bestValScoreidx]
+    # plt.title("Number of n_estimators & warm_start = False vs Time")
+    # plt.plot(df['n_estimators'], df['train_time(sec)'], color="red", label="train_time")
+    # plt.scatter(bestval6, timeval, color='green')
     # #################################################################################################4
     
     ''' Finding n_estimators & warm_start = True '''
     
     df = pd.DataFrame(columns=['id', 'n_estimators', 'Val_score', 'Train_score', 'train_time(sec)', 'Test_score'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
-    for numTree in range(1, 60):
+    for numTree in range(1, 20):
         now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=numTree, random_state=0, warm_start=True,min_impurity_decrease=int(bestval5), min_samples_leaf=int(bestval2),max_features= int(bestval3), max_leaf_nodes=int(bestval), min_samples_split=int(bestval1), max_depth = int(maxDepthVal))
         random_forest.fit(x_train, y_train.ravel())
@@ -402,12 +408,13 @@ def main():
     plt.legend(loc="lower right")
     plt.xlabel("Num n_estimators")
     plt.ylabel("Score Values")
+    #plt.savefig('./figures/8.png')
 
-    plt.figure(16)
-    timeval = df['train_time(sec)'][bestValScoreidx]
-    plt.title("Number of n_estimators & warm_start = True vs Time")
-    plt.plot(df['n_estimators'], df['train_time(sec)'], color="red", label="train_time")
-    plt.scatter(bestval7, timeval, color='green')
+    # plt.figure(16)
+    # timeval = df['train_time(sec)'][bestValScoreidx]
+    # plt.title("Number of n_estimators & warm_start = True vs Time")
+    # plt.plot(df['n_estimators'], df['train_time(sec)'], color="red", label="train_time")
+    # plt.scatter(bestval7, timeval, color='green')
 
     # print("Done")
     # # Show Graph
