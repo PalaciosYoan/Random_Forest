@@ -44,7 +44,7 @@ def main():
     #define needed columns
     df = pd.DataFrame(columns=['id', 'max_depth', 'Val_score', 'Train_score','Test_score', 'train_time(sec)', 'Test_score'])
     counter = 1 #this is the unique id to identify each model, not needed but added cause why not
-    for currDepth in range(1,20):
+    for currDepth in range(1,20): #itterates thru the depth
         now = datetime.now()
         random_forest = RandomForestClassifier(n_estimators=1, random_state=0, max_depth = currDepth)
         random_forest.fit(x_train, y_train.ravel())
@@ -52,16 +52,21 @@ def main():
         currentModelScore_val = random_forest.score(data_fea[validation_idx, :], data_gnd[validation_idx, :])
         currentModelScore_train = random_forest.score(data_fea[train_idx, :], data_gnd[train_idx, :])
         test_score = random_forest.score(data_fea[test_idx, :], data_gnd[test_idx, :])
+        #stores current model into a df
         df = df.append({'id':counter, 'max_depth':currDepth, 'Val_score':currentModelScore_val, 'Train_score':currentModelScore_train,'Test_score': test_score, 'train_time(sec)':(end-now).total_seconds()}, ignore_index=True)
         counter += 1
 
+    #stores the model found into a csv
     df.to_csv('./max_depth/max_depth10.csv', index=False)
+    
+    #finds best score
     bestValScoreidx = df['Val_score'].idxmax()
     bestValScore = df['Val_score'][bestValScoreidx]
     maxDepthVal = df['max_depth'][bestValScoreidx]
     id = df['id'][bestValScoreidx]
 
     plt.figure(1)
+    #plots train, validation, and test score
     plt.plot(df['max_depth'], df['Train_score'], color="red", label="Train_Score")
     plt.plot(df['max_depth'], df['Val_score'], color="blue", label="Val_score")
     plt.plot(df['max_depth'], df['Test_score'], color="pink", label="Test_Score")
@@ -74,7 +79,7 @@ def main():
     plt.ylabel("Score Values")
     plt.savefig('./figures/1.png')
     
-
+    #### From now everything else follows the same logic as above)
     #################################################################################################
     
     '''Finding min_samples_split can be between 4 & 2 or 24(this one is the best of best, iterations of 39)'''
